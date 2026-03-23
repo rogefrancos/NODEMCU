@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+    <!-- app -->
+    <meta name="Cielo" content="Add to Home">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-startup-image" href="splash/launch-640x1136.png" media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+    <link rel="apple-touch-startup-image" href="splash/launch-750x1294.png" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+    <link rel="apple-touch-startup-image" href="splash/launch-1242x2148.png" media="(device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
+    <link rel="apple-touch-startup-image" href="splash/launch-1125x2436.png" media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
+    <link rel="apple-touch-startup-image" href="splash/launch-1536x2048.png" media="(min-device-width: 768px) and (max-device-width: 1024px) and (-webkit-min-device-pixel-ratio: 2) and (orientation: portrait)">
+    <link rel="apple-touch-startup-image" href="splash/launch-1668x2224.png" media="(min-device-width: 834px) and (max-device-width: 834px) and (-webkit-min-device-pixel-ratio: 2) and (orientation: portrait)">
+    <link rel="apple-touch-startup-image" href="splash/launch-2048x2732.png" media="(min-device-width: 1024px) and (max-device-width: 1024px) and (-webkit-min-device-pixel-ratio: 2) and (orientation: portrait)">
+
+    <meta name="msapplication-TileColor" content="#d5f4ef">
+    <meta name="theme-color" content="#d5f4ef">
+
+        <!-- iconos -->
+    <link rel="apple-touch-icon" href="iconos/touch-icon-iphone.png">
+    <link rel="shortcut icon" sizes="16x16" href="iconos/icon-16x16.png">
+    <link rel="shortcut icon" sizes="196x196" href="iconos/icon-196x196.png">
+    <link rel="apple-touch-icon-precomposed" href="iconos/icon-152x152.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <!-- end app -->
+
+    <title>SENSORES</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+    <script src="https://www.gstatic.com/firebasejs/4.8.2/firebase.js"></script>
+    <script src="js/artyom.min.js"></script>
+    <script src="js/artyomCommands.js"></script>
+    <script src="https://code.responsivevoice.org/responsivevoice.js"></script>
+    
+  
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="plugins/fontawesome-free/css/all.min.css">
+    <!-- overlayScrollbars -->
+	  <link rel="stylesheet" href="plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
+    <!-- Theme style -->
+	  <link rel="stylesheet" href="dist/css/adminlte.min.css">
+    <link rel="stylesheet" href="css/principal.css">
+    <!-- Google Font: Source Sans Pro -->
+  	<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/4.8.2/firebase.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.0/Chart.bundle.min.js"></script>
+</head>
+<body>
+
+<div class="container">
+      <div id="logo">
+      <!--   <img id="logoImg" src="img/logo.png"  > -->
+      </div>
+  <hr>
+                <div class="row"  style="margin-top: 20px;">
+                <div class="col-md-12 text-center">
+                          <div class="outer-form">
+                    <table class="table-striped table table-bordered vertical">
+                          <thead style="color: white; font-weight: normal; background-color: black; text-align: left;" >
+                            <tr>
+
+                              <th  class="head">Modulo</th>
+                              <th  class="head">Lugar</th>
+                              <th style="width: 8px;"  class="head">Status</th>
+                            </tr>
+                          </thead>
+
+                          <tbody style="border:1px solid transparent; background-color:#242424; color:#A1A6AB; text-align: left;">
+
+                            <tr>
+                              <td id="icono"><img src="img/foco.png" width="38px"><span id="desc"> Foco</span> </td>
+                              <td id="desc">Sala</td>
+                              <td>
+                               <label class="switch">
+                               <input id="foco1" type="checkbox" >
+                               <span class="slider round"></span>
+                               </label>
+                              </td>
+                            </tr>
+
+
+                            <tr>
+                              <td id="icono"><img src="img/foco.png" width="38px"><span id="desc"> Foco2</span> </td>
+                              <td id="desc">recamara</td>
+                              <td>
+                               <label class="switch">
+                               <input id="foco2" type="checkbox" >
+                               <span class="slider round"></span>
+                               </label>
+                              </td>
+                            </tr>
+
+                          </tbody>
+                        </table>
+                      </div>
+                  </div>
+              </div>
+
+
+
+
+  <hr>
+          
+              </div>
+  <hr>
+
+    <div class="Preview">
+             <h7 style="color: rgb(241, 234, 234);">Temperatura y Humedad</h7>
+
+                  <div class="row" id="sensores">
+
+              <div class="col-xs-6 ">
+
+                        <div class="GaugeMeter" id="grados"  data-append=" C" data-size="140" data-theme="White" data-back="RGBa(0,0,0,.1)" data-animate_gauge_colors=true data-animate_text_colors=true data-width="15" data-label="LAB " data-style="Arch" data-label_color="#FFF">
+                        </div>
+
+              </div>
+
+              <div class="col-xs-6 ">
+                 <div class="GaugeMeter" id="humedadMarca"  data-append="H" data-size="140" data-theme="White" data-back="RGBa(0,0,0,.1)" data-animate_gauge_colors=true data-animate_text_colors=true data-width="15" data-label="LAB" data-style="Arch" data-label_color="#FFF">
+                 </div>
+
+              </div>
+
+          </div>
+    </div>
+
+
+
+  <hr>
+
+        
+
+       
+    
+    
+
+  <br>
+  <br>
+  <br>
+  <br>
+
+ 
+
+
+<div class="footer">
+   <div class="site-footer">
+
+    <div class="row" >
+
+    </div>
+
+   </div>
+</div>
+
+
+
+
+
+
+<script src="js/jquery-3.2.1.min.js"></script>
+
+<script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.js'></script>
+<script src="js/main.js"></script>
+<script src="appCon.js"></script>   <!-- necesario para app-->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+<script src="js/GaugeMeter.js"></script>
+<script src='https://rawgit.com/jaames/iro.js/master/dist/iro.js'></script>
+<script src="js/typewriter.js"></script>
+
+
+
+</body>
+</html>
