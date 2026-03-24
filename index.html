@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 
-  <!-- PWA / App -->
   <meta name="Cielo" content="Add to Home">
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-startup-image" href="splash/launch-640x1136.png"  media="(device-width:320px) and (device-height:568px) and (-webkit-device-pixel-ratio:2) and (orientation:portrait)">
@@ -308,7 +307,6 @@
 <body>
 <div class="page-wrap">
 
-  <!-- Header -->
   <header class="site-header">
     <div class="site-title">SENSOR<span>DHT11</span> // Monitor</div>
     <div class="clock-block">
@@ -317,7 +315,6 @@
     </div>
   </header>
 
-  <!-- Live cards -->
   <p class="section-label">// Lectura en vivo</p>
   <div class="live-cards">
     <div class="live-card temp">
@@ -332,7 +329,6 @@
     </div>
   </div>
 
-  <!-- Temperature chart -->
   <p class="section-label">// Historial — últimas 24 h</p>
   <div class="chart-card">
     <div class="chart-header">
@@ -342,7 +338,6 @@
     <div class="chart-wrap"><canvas id="chart-temp"></canvas></div>
   </div>
 
-  <!-- Humidity chart -->
   <div class="chart-card">
     <div class="chart-header">
       <span class="chart-title hum">Humedad %</span>
@@ -351,7 +346,6 @@
     <div class="chart-wrap"><canvas id="chart-hum"></canvas></div>
   </div>
 
-  <!-- CSV Export -->
   <p class="section-label">// Exportar datos</p>
   <div class="export-card">
     <div class="export-info">
@@ -366,7 +360,6 @@
     </button>
   </div>
 
-  <!-- Status bar -->
   <div class="status-bar">
     Firebase: <span id="fb-status">conectando…</span>
     &nbsp;|&nbsp; Intervalo de guardado: 2 min
@@ -375,7 +368,6 @@
 
 </div>
 
-<!-- Scripts -->
 <script src="js/jquery-3.2.1.min.js"></script>
 <script src="js/GaugeMeter.js"></script>
 
@@ -457,7 +449,7 @@ const chartHum  = makeChart('chart-hum',  '#00c9a7', 'rgba(0,201,167',  '%');
 
 /* ── Firebase listener ── */
 const TWENTY_FOUR_H = 24 * 60 * 60 * 1000;
-let allEntries = [];   // ← guardamos todos los datos aquí para el CSV
+let allEntries = [];   
 
 function formatRelative(ts) {
   const diff = Date.now() - ts;
@@ -467,7 +459,7 @@ function formatRelative(ts) {
 }
 
 db.ref('/dht11')
-  .orderByChild('timestamp')
+  .orderByChild('timestamp_unix')
   .startAt(Date.now() - TWENTY_FOUR_H)
   .on('value', snapshot => {
     const raw = snapshot.val();
@@ -475,14 +467,14 @@ db.ref('/dht11')
     if (!raw) return;
 
     allEntries = Object.values(raw)
-      .filter(e => e.timestamp)
-      .sort((a, b) => a.timestamp - b.timestamp);
+      .filter(e => e.timestamp_unix)
+      .sort((a, b) => a.timestamp_unix - b.timestamp_unix);
 
     if (!allEntries.length) return;
 
     // Charts
-    chartTemp.data.datasets[0].data = allEntries.map(e => ({ x: e.timestamp, y: e.temperature }));
-    chartHum.data.datasets[0].data  = allEntries.map(e => ({ x: e.timestamp, y: e.humidity    }));
+    chartTemp.data.datasets[0].data = allEntries.map(e => ({ x: e.timestamp_unix, y: e.temperatura_c }));
+    chartHum.data.datasets[0].data  = allEntries.map(e => ({ x: e.timestamp_unix, y: e.humedad_pct }));
     chartTemp.update('none');
     chartHum.update('none');
 
@@ -492,9 +484,9 @@ db.ref('/dht11')
 
     // Live cards
     const latest = allEntries[allEntries.length - 1];
-    const updatedText = `actualizado ${formatRelative(latest.timestamp)}`;
-    document.getElementById('val-temp').innerHTML = `${latest.temperature}<span class="live-card-unit">°C</span>`;
-    document.getElementById('val-hum').innerHTML  = `${latest.humidity}<span class="live-card-unit">%</span>`;
+    const updatedText = `actualizado ${formatRelative(latest.timestamp_unix)}`;
+    document.getElementById('val-temp').innerHTML = `${latest.temperatura_c}<span class="live-card-unit">°C</span>`;
+    document.getElementById('val-hum').innerHTML  = `${latest.humedad_pct}<span class="live-card-unit">%</span>`;
     document.getElementById('upd-temp').textContent = updatedText;
     document.getElementById('upd-hum').textContent  = updatedText;
 
@@ -510,10 +502,9 @@ function exportCSV() {
   if (!allEntries.length) return;
 
   const header = 'timestamp_unix,fecha_hora,temperatura_c,humedad_pct\n';
+  
   const rows = allEntries.map(e => {
-    const d = new Date(e.timestamp);
-    const fechaHora = `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
-    return `${e.timestamp},${fechaHora},${e.temperature},${e.humidity}`;
+    return `${e.timestamp_unix},${e.fecha_hora},${e.temperatura_c},${e.humedad_pct}`;
   });
 
   const csv = header + rows.join('\n');
@@ -522,6 +513,7 @@ function exportCSV() {
 
   const a = document.createElement('a');
   const now = new Date();
+  
   a.href     = url;
   a.download = `sensordht11_${now.getFullYear()}${pad(now.getMonth()+1)}${pad(now.getDate())}_${pad(now.getHours())}${pad(now.getMinutes())}.csv`;
   a.click();
