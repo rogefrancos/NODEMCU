@@ -64,12 +64,10 @@ void setup() {
 }
 
 void loop() {
-
   if (!Firebase.ready()) return;
 
   byte temperature = 0;
   byte humidity = 0;
-
   int err = dht11.read(&temperature, &humidity, NULL);
   if (err != SimpleDHTErrSuccess) {
     Serial.println("Error DHT11");
@@ -80,12 +78,12 @@ void loop() {
     lastHistoryMillis = millis();
 
     FirebaseJson historyJson;
-    historyJson.set("temperature", temperature);
-    historyJson.set("humidity", humidity);
-    historyJson.set("timestamp/.sv", "timestamp");
+    historyJson.set("temperatura_c", temperature);
+    historyJson.set("humedad_pct", humidity);
+    historyJson.set("timestamp_unix/.sv", "timestamp");
 
     if (Firebase.pushJSON(fbdo, "/dht11", historyJson)) {
-      Serial.println("Registro guardado (NUEVO)");
+      Serial.println("Registro guardado");
     } else {
       Serial.print("Error: ");
       Serial.println(fbdo.errorReason());
